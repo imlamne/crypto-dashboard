@@ -24,8 +24,8 @@ from src.signals import get_all_signals, get_mtf_conclusion, get_signal
 def ensure_data():
     init_db()
 
-    if get_available_symbols():
-        return
+    # if get_available_symbols():
+    #     return
 
     for symbol in config.TRADING_PAIRS:
         for interval in config.TIMEFRAMES:
