@@ -14,7 +14,7 @@ st.set_page_config(layout="wide", page_title="Crypto Dashboard")
 
 from src.analysis import add_all_indicators
 from src.backtest import get_equity_curve, run_backtest
-from src.database import get_available_symbols, get_candles
+from src.database import get_available_symbols, get_candles, init_db, save_candles
 from src.fetcher import fetch_candles, fetch_gold_candles
 from src.patterns import detect_all_patterns
 from src.price_action import get_price_action_context
