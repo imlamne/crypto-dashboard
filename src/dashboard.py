@@ -15,9 +15,27 @@ st.set_page_config(layout="wide", page_title="Crypto Dashboard")
 from src.analysis import add_all_indicators
 from src.backtest import get_equity_curve, run_backtest
 from src.database import get_available_symbols, get_candles
+from src.fetcher import fetch_candles, fetch_gold_candles
 from src.patterns import detect_all_patterns
 from src.price_action import get_price_action_context
 from src.signals import get_all_signals, get_mtf_conclusion, get_signal
+
+@st.cache_resource
+def ensure_data():
+    init_db()
+
+    if get_available_symbols():
+        return
+
+    for symbol in config.TRADING_PAIRS:
+        for interval in config.TIMEFRAMES:
+            if symbol == "XAUUSD":
+                df = fetch_gold_candles(interval)
+            else:
+                df = fetch_candles(symbol, interval)
+
+            if not df.empty:
+                save_candles(df, symbol, interval)
 
 
 @st.cache_data(ttl=300)
@@ -1185,6 +1203,7 @@ def build_rsi_chart(df):
 
 # Sidebar
 st.sidebar.markdown("**Symbol**")
+ensure_data()
 symbols = get_available_symbols()
 symbol = st.sidebar.selectbox("Symbol", symbols or ["—"], label_visibility="collapsed")
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
